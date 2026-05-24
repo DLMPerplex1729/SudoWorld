@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.sudoku-grid {
+  @apply border-2 border-black;
+}
+
+.sudoku-cell {
+  @apply w-12 h-12 border border-gray-300 flex items-center justify-center font-bold cursor-pointer;
+  transition: all 0.2s;
+}
+
+.sudoku-cell:hover {
+  @apply bg-blue-100;
+}
+
+.sudoku-cell.selected {
+  @apply bg-blue-300;
+}
+
+.sudoku-cell.error {
+  @apply bg-red-100 border-red-500;
+}
+
+.sudoku-cell.filled {
+  @apply bg-yellow-50;
+}
