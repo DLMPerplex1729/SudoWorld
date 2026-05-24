@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sudoworld-postgres
+    environment:
+      POSTGRES_USER: sudoworld
+      POSTGRES_PASSWORD: sudoworld
+      POSTGRES_DB: sudoworld
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sudoworld"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sudoworld-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: sudoworld-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sudoworld-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: packages/backend/Dockerfile
+    container_name: sudoworld-backend
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://sudoworld:sudoworld@postgres:5432/sudoworld
+      REDIS_URL: redis://redis:6379
+      BACKEND_PORT: 5000
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./packages/backend:/app/packages/backend
+      - ./packages/shared:/app/packages/shared
+    networks:
+      - sudoworld-network
+    command: npm run dev -w packages/backend
+
+  frontend:
+    build:
+      context: .
+      dockerfile: packages/frontend/Dockerfile
+    container_name: sudoworld-frontend
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:5000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./packages/frontend:/app/packages/frontend
+      - ./packages/shared:/app/packages/shared
+    networks:
+      - sudoworld-network
+    command: npm run dev -w packages/frontend
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  sudoworld-network:
+    driver: bridge

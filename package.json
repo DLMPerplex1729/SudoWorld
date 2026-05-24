@@ -1,0 +1,36 @@
+{
+  "name": "sudoworld",
+  "version": "1.0.0",
+  "description": "A comprehensive Sudoku gaming platform with multiple game modes and social features",
+  "workspaces": [
+    "packages/shared",
+    "packages/backend",
+    "packages/frontend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --parallel",
+    "build": "npm run build --workspaces",
+    "start": "npm run start --workspaces",
+    "test": "npm run test --workspaces",
+    "backend:dev": "npm run dev -w packages/backend",
+    "frontend:dev": "npm run dev -w packages/frontend",
+    "backend:build": "npm run build -w packages/backend",
+    "frontend:build": "npm run build -w packages/frontend",
+    "migrate": "npm run migrate -w packages/backend",
+    "seed": "npm run seed -w packages/backend"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "sudoku",
+    "game",
+    "puzzle",
+    "3d",
+    "multiplayer",
+    "realtime"
+  ],
+  "author": "DLMPerplex1729",
+  "license": "MIT"
+}
